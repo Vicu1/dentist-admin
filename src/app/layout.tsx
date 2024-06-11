@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 
-import { Inter } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@mui/system';
 import { ReactNode } from 'react';
 
 import Providers from '@/store/provider';
 import customTheme from '@/style/theme';
-const inter = Inter({
+const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
   style: ['normal'],
   subsets: ['latin']
@@ -24,7 +24,7 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang={'en'}>
-      <body className={inter.className}>
+      <body className={poppins.className}>
         <ThemeProvider theme={customTheme}>
           <Providers>
             {children}

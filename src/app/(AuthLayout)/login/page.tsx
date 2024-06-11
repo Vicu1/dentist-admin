@@ -2,9 +2,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Card, Grid, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
+import { useMutation } from '@tanstack/react-query';
+import { setCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import Button from '@/components/Button';
@@ -12,6 +13,9 @@ import FormInput from '@/components/Form/FormInput';
 import FormWrapper from '@/components/Form/FormWrapper';
 import LoginFormStyled from '@/features/Login/styled';
 import validation from '@/features/Login/validation';
+import http from '@/service';
+import { login } from '@/store/features/userSlice';
+import { useAppDispatch } from '@/store/hooks';
 
 interface LoginInterface {
   email: string;
@@ -20,24 +24,25 @@ interface LoginInterface {
 
 const LoginPage = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
   const form = useForm<LoginInterface>({
     mode: 'onChange',
     reValidateMode: 'onChange',
     resolver: yupResolver(validation),
   });
-
-  const onSubmit = async (data: LoginInterface) => {
-    try {
-      setLoading(true);
-      console.log(data);
-      enqueueSnackbar('Successfully login');
+  const dispatch = useAppDispatch();
+  const { mutate, isPending } = useMutation({
+    mutationFn: (login: LoginInterface) => {
+      return http.post('auth/login', login);
+    },
+    onSuccess: ({ data }) => {
+      dispatch(login(data));
+      setCookie('user', data);
+      enqueueSnackbar('Успешный вход');
       router.push('/');
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
     }
+  });
+  const onSubmit = async (loginInterface: LoginInterface) => {
+    mutate(loginInterface);
   };
 
   return (
@@ -61,8 +66,8 @@ const LoginPage = () => {
               xs={12}
             >
               <FormInput
-                label={'Email'}
-                disabled={loading}
+                label={'Электронная почта'}
+                disabled={isPending}
                 name={'email'}
               />
             </Grid>
@@ -72,8 +77,8 @@ const LoginPage = () => {
             >
               <FormInput
                 type={'password'}
-                label={'Password'}
-                disabled={loading}
+                label={'Пароль'}
+                disabled={isPending}
                 name={'password'}
               />
             </Grid>
@@ -84,11 +89,11 @@ const LoginPage = () => {
           >
             <Button
               type={'submit'}
-              loading={loading}
-              disabled={loading}
+              loading={isPending}
+              disabled={isPending}
               color={'primary'}
             >
-              Login
+              Войти
             </Button>
           </Stack>
         </FormWrapper>

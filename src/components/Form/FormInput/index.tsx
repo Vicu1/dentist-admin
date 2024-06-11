@@ -37,6 +37,14 @@ const FormInput: FC<FormInputProps> = ({
                 <TextField
                   value={fields.value}
                   ref={ref}
+                  inputRef={ref}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#ffffff',
+                      },
+                    },
+                  }}
                   name={name}
                   onChange={fields.onChange}
                   type={type}

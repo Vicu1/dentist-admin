@@ -1,6 +1,8 @@
 import { ButtonPropsColorOverrides, ButtonPropsVariantOverrides } from '@mui/material';
 import { OverridableStringUnion } from '@mui/types';
+import Link from 'next/link';
 import { FC, ReactNode } from 'react';
+import { Else, If, Then } from 'react-if';
 
 import ButtonStyled from '@/components/Button/styled';
 
@@ -10,7 +12,8 @@ interface ButtonProps {
     color?: OverridableStringUnion<'primary' | 'inherit' | 'secondary' | 'success' | 'error' | 'info' | 'warning', ButtonPropsColorOverrides>
     loading?: boolean,
     type?: any,
-    variant?:  OverridableStringUnion<'contained' | 'text' | 'outlined', ButtonPropsVariantOverrides>
+    variant?:  OverridableStringUnion<'contained' | 'text' | 'outlined', ButtonPropsVariantOverrides>,
+    url?: string
 }
 
 const Button: FC<ButtonProps> = ({
@@ -19,19 +22,31 @@ const Button: FC<ButtonProps> = ({
   color = 'primary',
   type = '',
   children,
-  variant = 'contained'
+  variant = 'contained',
+  url = ''
 }) => {
   return (
-    <ButtonStyled
-      disableElevation
-      loading={loading}
-      disabled={disabled}
-      variant={variant}
-      color={color}
-      type={type}
-    >
-      {children}
-    </ButtonStyled>
+    <If condition={url}>
+      <Then>
+        <Link href={url}>
+          <Button variant={'text'}>
+            {children}
+          </Button>
+        </Link>
+      </Then>
+      <Else>
+        <ButtonStyled
+          disableElevation
+          loading={loading}
+          disabled={disabled}
+          variant={variant}
+          color={color}
+          type={type}
+        >
+          {children}
+        </ButtonStyled>
+      </Else>
+    </If>
   );
 
 };
