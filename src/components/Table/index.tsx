@@ -15,7 +15,9 @@ interface TableProps<T> {
     page: number,
     total: number
   },
-  handleChangePage?: (page: number) => void
+  handleChangePage?: (page: number) => void,
+  handleConfirmDelete?: (itemId: number) => void,
+  moduleUrl?: string
 }
 const DataTable = <T,>({
   items = [],
@@ -23,7 +25,9 @@ const DataTable = <T,>({
   loading = false,
   actions = ['create', 'update', 'delete'],
   pagination,
-  handleChangePage
+  handleChangePage,
+  handleConfirmDelete,
+  moduleUrl = ''
 }: TableProps<T>) => {
 
   return <Card elevation={0}>
@@ -48,6 +52,8 @@ const DataTable = <T,>({
             headers={headers}
             items={items}
             actions={actions}
+            handleConfirmDelete={handleConfirmDelete}
+            moduleUrl={moduleUrl}
           />
         </When>
       </Table>
@@ -62,10 +68,12 @@ const DataTable = <T,>({
         />
       ))}
     </When>
-    <TablePagination
-      pagination={pagination}
-      handleChangePage={handleChangePage}
-    />
+    <When condition={(pagination?.total || 1) > 1}>
+      <TablePagination
+        pagination={pagination}
+        handleChangePage={handleChangePage}
+      />
+    </When>
   </Card>;
 };
 export default DataTable;

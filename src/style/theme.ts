@@ -4,7 +4,7 @@ import { createTheme } from '@mui/material';
 const customTheme = createTheme({
   palette: {
     primary: {
-      main: '#7C6093',
+      main: '#984fd4',
       contrastText: 'white',
     },
     success: {
@@ -60,7 +60,10 @@ const customTheme = createTheme({
           minWidth: '100px',
           padding: '10px',
           border: '1px solid #ffffff',
-        }
+        },
+        colorSuccess: {
+          color: '#ffffff'
+        },
       }
     },
     MuiCard: {

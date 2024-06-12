@@ -13,6 +13,7 @@ const ClientsPage = () => {
     <TableConstructor<ClientItemInterface>
       module={'clients'}
       moduleTitle={'Клиенты'}
+      actions={[]}
       headers={headers}
     />
   );

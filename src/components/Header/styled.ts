@@ -24,7 +24,7 @@ const closedMixin = (theme: any): CSSObject => ({
 const HeaderStyled = styled('header')(({ theme, open }: HeaderStyledInterface) => ({
   height: 'calc(100vh - 10px)',
   borderRadius: '20px',
-  background: 'linear-gradient(180deg, rgba(12,17,13,1) 20%, rgba(124,96,147,1) 100%)',
+  background: `linear-gradient(180deg, rgba(12,17,13,1) 20%, ${alpha(theme.palette.primary.main, 0.5)} 100%)`,
   color: theme.palette.common.white,
   position: 'fixed',
   width: '90px',

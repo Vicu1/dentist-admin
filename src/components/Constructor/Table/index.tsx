@@ -1,7 +1,8 @@
 'use client';
 import { Typography } from '@mui/material';
 import { Stack } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
 import { When } from 'react-if';
@@ -9,7 +10,10 @@ import { When } from 'react-if';
 import Button from '@/components/Button';
 import { HeaderInterface } from '@/components/Constructor/Table/headerInterface';
 import Table from '@/components/Table';
+import http from '@/service';
 import getData from '@/service/getData';
+import { closeConfirmDialog, openConfirmDialog } from '@/store/features/confirmDialogSlice';
+import { useAppDispatch } from '@/store/hooks';
 
 
 interface TableConstructorProps<T> {
@@ -29,6 +33,9 @@ const TableConstructor = <T, >({
     page: 1,
     total: 1
   });
+  const router = useRouter();
+  const moduleUrl = module.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+  const dispatch = useAppDispatch();
   const { data, isLoading } = useQuery<{data: T[] }>({
     queryKey: [module, pagination.page],
     queryFn: async () => {
@@ -47,6 +54,25 @@ const TableConstructor = <T, >({
     },
   });
 
+  const mutation = useMutation({
+    mutationFn: (itemId: number) => {
+      return http.delete(`${module}/${itemId}`);
+    },
+    onSuccess: () => {
+      dispatch(closeConfirmDialog());
+      enqueueSnackbar('Успешно удалено');
+    }
+  });
+
+  const handleConfirmDelete = (itemId: number) => {
+    dispatch(openConfirmDialog({
+      handleAccept: mutation.mutate,
+      title: 'Удалить подтверждение',
+      text: 'Вы уверены, что хотите удалить этот элемент?',
+      selectedItem: itemId,
+    }));
+  };
+
   const handleChangePage = (page: number) => {
     setPagination((prevState) => ({ ...prevState, page }));
   };
@@ -63,7 +89,13 @@ const TableConstructor = <T, >({
           {moduleTitle}
         </Typography>
         <When condition={actions?.includes('create')}>
-          <Button>Создать</Button>
+          <Button
+            handleClick={() => {
+              router.push(`/${moduleUrl}/create`);
+            }}
+          >
+            Создать
+          </Button>
         </When>
       </Stack>
       <Table<T>
@@ -73,6 +105,8 @@ const TableConstructor = <T, >({
         actions={actions}
         loading={isLoading}
         handleChangePage={handleChangePage}
+        handleConfirmDelete={handleConfirmDelete}
+        moduleUrl={moduleUrl}
       />
     </>
   );

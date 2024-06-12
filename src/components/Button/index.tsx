@@ -13,7 +13,8 @@ interface ButtonProps {
     loading?: boolean,
     type?: any,
     variant?:  OverridableStringUnion<'contained' | 'text' | 'outlined', ButtonPropsVariantOverrides>,
-    url?: string
+    url?: string,
+    handleClick?: () => void
 }
 
 const Button: FC<ButtonProps> = ({
@@ -23,7 +24,8 @@ const Button: FC<ButtonProps> = ({
   type = '',
   children,
   variant = 'contained',
-  url = ''
+  url = '',
+  handleClick = () => {}
 }) => {
   return (
     <If condition={url}>
@@ -42,6 +44,7 @@ const Button: FC<ButtonProps> = ({
           variant={variant}
           color={color}
           type={type}
+          onClick={handleClick}
         >
           {children}
         </ButtonStyled>

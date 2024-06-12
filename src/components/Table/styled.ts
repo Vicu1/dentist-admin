@@ -31,9 +31,13 @@ const TableContainerStyled = styled(TableContainer)(({ theme }) => ({
         height: '50px',
         minWidth: '50px',
         borderRadius: '50%',
-        backgroundColor: alpha(theme.palette.primary.main, 0.2),
+        backgroundColor: theme.palette.primary.main,
+        transition: 'background-color 0.2s',
         svg: {
-          color: theme.palette.common.black
+          color: theme.palette.common.white
+        },
+        '&:hover': {
+          backgroundColor: alpha(theme.palette.primary.main, 0.7),
         }
       }
     },

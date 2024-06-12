@@ -5,6 +5,7 @@ import './globals.css';
 import { ThemeProvider } from '@mui/system';
 import { ReactNode } from 'react';
 
+import ConfirmDialog from '@/components/ConfirmDialog';
 import Providers from '@/store/provider';
 import customTheme from '@/style/theme';
 const poppins = Poppins({
@@ -27,6 +28,7 @@ const RootLayout = ({
       <body className={poppins.className}>
         <ThemeProvider theme={customTheme}>
           <Providers>
+            <ConfirmDialog />
             {children}
           </Providers>
         </ThemeProvider>
