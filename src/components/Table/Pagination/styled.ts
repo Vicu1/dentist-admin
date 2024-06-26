@@ -5,7 +5,7 @@ const PaginationStyled = styled(Pagination)(({ theme }) => ({
   marginTop: '20px',
   '.MuiPagination-ul': {
     justifyContent: 'center',
-    'li:first-child': {
+    'li:first-of-type': {
       marginRight: 'auto'
     },
     'li:last-child': {
@@ -26,7 +26,7 @@ const PaginationStyled = styled(Pagination)(({ theme }) => ({
       backgroundColor: theme.palette.common.white,
     }
   },
-  'li:first-child, li:last-child': {
+  'li:first-of-type, li:last-child': {
     '.MuiButtonBase-root': {
       color: theme.palette.text.primary,
     }

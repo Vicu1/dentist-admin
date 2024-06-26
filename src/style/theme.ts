@@ -87,7 +87,8 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: '15px !important',
-          minWidth: '300px',
+          minWidth: '140px',
+          width: '100%',
           background: '#FAFAFA'
         },
         input: {

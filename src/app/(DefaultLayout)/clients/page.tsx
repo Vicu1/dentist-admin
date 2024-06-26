@@ -1,4 +1,5 @@
 import TableConstructor from '@/components/Constructor/Table';
+import { customActions } from '@/features/Clients/CustomActions';
 import headers from '@/features/Clients/headers';
 import { DefaultInterface } from '@/static/DefaultInterface';
 
@@ -15,6 +16,7 @@ const ClientsPage = () => {
       moduleTitle={'Клиенты'}
       actions={[]}
       headers={headers}
+      customActions={customActions}
     />
   );
 };

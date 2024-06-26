@@ -33,6 +33,9 @@ const TableContainerStyled = styled(TableContainer)(({ theme }) => ({
         borderRadius: '50%',
         backgroundColor: theme.palette.primary.main,
         transition: 'background-color 0.2s',
+        '&.Mui-disabled': {
+          backgroundColor: theme.palette.grey['400']
+        },
         svg: {
           color: theme.palette.common.white
         },
@@ -41,7 +44,7 @@ const TableContainerStyled = styled(TableContainer)(({ theme }) => ({
         }
       }
     },
-    '.MuiTableRow-root td:first-child': {
+    '.MuiTableRow-root td:first-of-type': {
       borderTopLeftRadius: '50px',
       borderBottomLeftRadius: '50px'
     },

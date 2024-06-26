@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import http from '@/service/index';
 import stringifyParams from '@/utils/stringifyParams';
 
-const getData = async (endpoint: string, params: any) => {
+const getData = async (endpoint: string, params?: any) => {
   try {
     const paramsString = stringifyParams(params);
     let response: AxiosResponse;

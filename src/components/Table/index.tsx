@@ -1,4 +1,5 @@
 import { Card, Table, Skeleton, TableCell, TableHead, TableRow } from '@mui/material';
+import { ReactNode } from 'react';
 import { When } from 'react-if';
 
 import { HeaderInterface } from '@/components/Constructor/Table/headerInterface';
@@ -17,7 +18,9 @@ interface TableProps<T> {
   },
   handleChangePage?: (page: number) => void,
   handleConfirmDelete?: (itemId: number) => void,
-  moduleUrl?: string
+  setSelectedItem?: (value: T) => void,
+  customActions?: ReactNode[],
+  refetch?: any
 }
 const DataTable = <T,>({
   items = [],
@@ -27,7 +30,9 @@ const DataTable = <T,>({
   pagination,
   handleChangePage,
   handleConfirmDelete,
-  moduleUrl = ''
+  setSelectedItem,
+  customActions = [],
+  refetch
 }: TableProps<T>) => {
 
   return <Card elevation={0}>
@@ -40,7 +45,7 @@ const DataTable = <T,>({
                 {header.label}
               </TableCell>
             )}
-            <When condition={actions?.includes('update') || actions?.includes('delete')}>
+            <When condition={actions?.includes('update') || actions?.includes('delete') || customActions?.length}>
               <TableCell align={'right'}>
                 Действия
               </TableCell>
@@ -53,7 +58,9 @@ const DataTable = <T,>({
             items={items}
             actions={actions}
             handleConfirmDelete={handleConfirmDelete}
-            moduleUrl={moduleUrl}
+            handleSelectItem={setSelectedItem}
+            customActions={customActions}
+            refetch={refetch}
           />
         </When>
       </Table>

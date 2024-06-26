@@ -9,7 +9,8 @@ interface FormInputProps {
     label: string;
     type?: string;
     disabled?: boolean;
-    className?: string
+    className?: string;
+    rows?: number
 }
 const FormInput: FC<FormInputProps> = ({
   label = '',
@@ -17,11 +18,13 @@ const FormInput: FC<FormInputProps> = ({
   type = 'text',
   disabled = false,
   className = '',
+  rows = 1
 }) => {
   const { control, formState, getFieldState } = useFormContext();
 
   return (
     <FormControl
+      fullWidth
       error={Boolean(getFieldState(name, formState)?.error)}
     >
       <FormControlLabel
@@ -33,10 +36,13 @@ const FormInput: FC<FormInputProps> = ({
             control={control}
             defaultValue={''}
             render={({ field: { ref, ...fields }, fieldState: { error } }) => (
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: 'relative', width: '100%' }}>
                 <TextField
+                  fullWidth
                   value={fields.value}
                   ref={ref}
+                  rows={rows}
+                  multiline={rows > 1}
                   inputRef={ref}
                   sx={{
                     '& .MuiOutlinedInput-root': {
@@ -56,7 +62,6 @@ const FormInput: FC<FormInputProps> = ({
                   error={error}
                 />
               </div>
-
             )}
           />
         }

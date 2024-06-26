@@ -13,7 +13,11 @@ const LoginFormStyled = styled('div')((({ theme }) => ({
   },
   '.MuiPaper-root': {
     padding: '25px'
+  },
+  '.MuiFormControl-root': {
+    maxWidth: '400px'
   }
+
 })));
 
 export default LoginFormStyled;

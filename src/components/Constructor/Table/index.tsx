@@ -1,14 +1,14 @@
 'use client';
 import { Typography } from '@mui/material';
 import { Stack } from '@mui/material';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { enqueueSnackbar } from 'notistack';
-import { useState } from 'react';
+import { cloneElement, FC, ReactNode, useState } from 'react';
 import { When } from 'react-if';
 
 import Button from '@/components/Button';
 import { HeaderInterface } from '@/components/Constructor/Table/headerInterface';
+import FormModal, { FormType } from '@/components/FormModal';
 import Table from '@/components/Table';
 import http from '@/service';
 import getData from '@/service/getData';
@@ -20,23 +20,30 @@ interface TableConstructorProps<T> {
   module: string,
   moduleTitle: string
   headers: HeaderInterface<T>[],
-  actions?: string[]
+  actions?: string[],
+  createForm?: null | ReactNode | FC,
+  updateForm?: null | ReactNode | FC,
+  customActions?: ReactNode[]
 }
 
 const TableConstructor = <T, >({
   module = '',
   moduleTitle = '',
   headers = [],
-  actions = ['create', 'update', 'delete']
+  actions = ['create', 'update', 'delete'],
+  createForm = null,
+  updateForm = null,
+  customActions = []
 }: TableConstructorProps<T>) => {
   const [pagination, setPagination] = useState({
     page: 1,
     total: 1
   });
-  const router = useRouter();
-  const moduleUrl = module.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+  const queryClient = useQueryClient();
+  const [createMode, setCreateMode] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const dispatch = useAppDispatch();
-  const { data, isLoading } = useQuery<{data: T[] }>({
+  const { data, isLoading, refetch } = useQuery<{data: T[] }>({
     queryKey: [module, pagination.page],
     queryFn: async () => {
       try {
@@ -61,6 +68,11 @@ const TableConstructor = <T, >({
     onSuccess: () => {
       dispatch(closeConfirmDialog());
       enqueueSnackbar('Успешно удалено');
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      queryClient.invalidateQueries({ queryKey: module });
+      setPagination({ ...pagination, page: 1 });
+      refetch();
     }
   });
 
@@ -77,6 +89,32 @@ const TableConstructor = <T, >({
     setPagination((prevState) => ({ ...prevState, page }));
   };
 
+  const renderCreateForm = () => {
+    const props = {
+      setCreateMode,
+      refetch,
+    };
+
+    if(createForm) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      return cloneElement(createForm, props);
+    }
+  };
+  const renderUpdateForm = () => {
+    const props = {
+      setSelectedItem,
+      refetch,
+      selectedItem
+    };
+
+    if(updateForm) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      return cloneElement(updateForm, props);
+    }
+  };
+
   return (
     <>
       <Stack
@@ -90,9 +128,7 @@ const TableConstructor = <T, >({
         </Typography>
         <When condition={actions?.includes('create')}>
           <Button
-            handleClick={() => {
-              router.push(`/${moduleUrl}/create`);
-            }}
+            handleClick={() => setCreateMode(true)}
           >
             Создать
           </Button>
@@ -106,8 +142,27 @@ const TableConstructor = <T, >({
         loading={isLoading}
         handleChangePage={handleChangePage}
         handleConfirmDelete={handleConfirmDelete}
-        moduleUrl={moduleUrl}
+        setSelectedItem={setSelectedItem}
+        customActions={customActions}
+        refetch={refetch}
       />
+      <When condition={createMode}>
+        <FormModal
+          open={createMode}
+          onClose={() => setCreateMode(false)}
+        >
+          {renderCreateForm()}
+        </FormModal>
+      </When>
+      <When condition={Boolean(selectedItem)}>
+        <FormModal
+          open={Boolean(selectedItem)}
+          type={FormType.UPDATE}
+          onClose={() => setSelectedItem(null)}
+        >
+          {renderUpdateForm()}
+        </FormModal>
+      </When>
     </>
   );
 };

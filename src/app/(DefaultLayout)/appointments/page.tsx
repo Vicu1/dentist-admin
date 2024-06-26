@@ -1,6 +1,10 @@
+import CreateForm from '@/components/Constructor/CreateForm';
 import TableConstructor from '@/components/Constructor/Table';
+import { customActions } from '@/features/Appointments/CustomActions';
+import formElements from '@/features/Appointments/formElements';
 import headers from '@/features/Appointments/headers';
 import { statusEnum } from '@/features/Appointments/statuses';
+import validation from '@/features/Appointments/validation';
 import { DefaultInterface } from '@/static/DefaultInterface';
 
 export interface AppointmentItemInterface extends DefaultInterface {
@@ -17,7 +21,15 @@ const AppointmentsPage = () => {
       module={'appointments'}
       moduleTitle={'Приемы'}
       headers={headers}
-      actions={['create']}
+      actions={['create', 'update']}
+      customActions={customActions}
+      createForm={(
+        <CreateForm
+          module={'appointments'}
+          formElements={formElements}
+          validation={validation}
+        />
+      )}
     />
   );
 };
