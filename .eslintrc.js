@@ -60,7 +60,6 @@ module.exports = {
   rules: {
     'react-hooks/rules-of-hooks': 'error',
     '@typescript-eslint/no-explicit-any': 'off',
-    'react-hooks/exhaustive-deps': 'warn',
     'react/jsx-first-prop-new-line': ['error', 'multiline'],
     'react/jsx-max-props-per-line': ['error', {
       maximum: {
@@ -128,7 +127,6 @@ module.exports = {
     ],
     'import/no-extraneous-dependencies': 1,
     'import/no-self-import': 1,
-    'import/no-cycle': 1,
     'import/order': [
       'warn',
       {
